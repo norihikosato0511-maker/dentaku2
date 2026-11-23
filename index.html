@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>電卓</title>
+
+<style>
+
+body{
+    font-family:'Noto Sans JP',sans-serif;
+    color:#111827;
+
+    background:linear-gradient(
+        135deg,
+        #1e3a8a,
+        #2563eb,
+        #4f46e5
+    );
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+}
+
+.calculator{
+    background:rgba(255,255,255,.1);
+    backdrop-filter:blur(15px);
+
+    padding:20px;
+    border-radius:20px;
+
+    box-shadow:0 10px 30px rgba(0,0,0,.3);
+
+    width:410px;
+}
+
+#display{
+    width:93%;
+    height:50px;
+    font-size:28px;
+
+    text-align:right;
+    margin-bottom: 10px;
+    padding:10px 15px;
+
+    border:none;
+    border-radius:12px;
+
+    background:#f8fafc;
+    color:#111827;
+
+    box-shadow:
+        inset 0 2px 8px rgba(0,0,0,.1);
+}
+
+#history{
+    height:80px;
+    overflow-y:auto;
+
+    margin-bottom:10px;
+    padding:10px;
+
+    background:rgba(255,255,255,.15);
+    border-radius:12px;
+
+    color:#dbeafe;
+    font-size:14px;
+
+    text-align:right;
+}
+
+.buttons {
+    display:grid;
+    grid-template-columns:repeat(5,70px);
+    gap:5px;
+}
+
+button {
+    height: 60px;
+    font-size: 20px;
+    cursor: pointer;
+
+    border:none;
+    border-radius:10px;
+
+    transition:.2s;
+}
+
+button:hover{
+    transform:translateY(-2px);
+
+    background:#60a5fa;
+    color:white;
+
+    box-shadow:
+        0 0 10px rgba(96,165,250,.6);
+}
+
+button:active{
+    transform:translateY(0);
+}
+
+</style>
+</head>
+
+<body>
+
+<div class="calculator">
+
+<h2 style="
+    text-align:center;
+    margin-bottom:15px;
+    color:#dbeafe;
+    text-shadow:0 0 10px rgba(255,255,255,.5);
+">
+🧮 徳印ユーティリティ Mini
+</h2>
+
+<p style="
+text-align:center;
+color:#dbeafe;
+font-size:12px;
+margin-bottom:15px;
+">
+DEC / HEX / BIN / OCT Converter
+</p>
+
+<div id="history"></div>
+
+<input type="text" id="display" readonly>
+
+<div class="buttons">
+
+<button onclick="clearDisplay()">C</button>
+<button onclick="clearHistory()">🗑</button>
+<button onclick="backspace()">⌫</button>
+<button onclick="toHex()">HEX</button>
+<button onclick="toBin()">BIN</button>
+
+<button onclick="toOct()">OCT</button>
+<button onclick="append('7')">7</button>
+<button onclick="append('8')">8</button>
+<button onclick="append('9')">9</button>
+<button onclick="append('/')">÷</button>
+
+<button onclick="sqrt()">√</button>
+<button onclick="append('4')">4</button>
+<button onclick="append('5')">5</button>
+<button onclick="append('6')">6</button>
+<button onclick="append('*')">×</button>
+
+<button onclick="append('-')">−</button>
+<button onclick="append('1')">1</button>
+<button onclick="append('2')">2</button>
+<button onclick="append('3')">3</button>
+<button onclick="append('+')">＋</button>
+
+<button style="grid-column: span 2;"
+        onclick="append('0')">0</button>
+
+<button onclick="append('.')">.</button>
+
+<button onclick="calculate()">＝</button>
+
+</div>
+
+</div>
+
+<script>
+
+function append(value){
+    document.getElementById("display").value += value;
+}
+
+function clearDisplay(){
+    document.getElementById("display").value = "";
+}
+
+function clearHistory(){
+    document.getElementById("history")
+            .innerHTML = "";
+}
+
+function calculate(){
+
+    const display =
+        document.getElementById("display");
+
+    const history =
+        document.getElementById("history");
+
+    try{
+
+        const expression = display.value;
+        const result = eval(expression);
+
+        history.innerHTML =
+            expression + " = " + result + "<br>"
+            + history.innerHTML;
+
+        history.scrollTop = 0;
+
+        display.value = result;
+    }
+    catch{
+        display.value = "エラー";
+    }
+}
+
+function backspace(){
+    const display =
+        document.getElementById("display");
+
+    display.value =
+        display.value.slice(0,-1);
+}
+
+document.addEventListener("keydown", e => {
+
+    if("0123456789.+-*/".includes(e.key)){
+        append(e.key);
+    }
+
+    if(e.key === "Enter"){
+        calculate();
+    }
+
+    if(e.key === "Backspace"){
+        backspace();
+    }
+});
+
+function sqrt(){
+    const d=document.getElementById("display");
+    d.value = Math.sqrt(Number(d.value));
+}
+
+function percent(){
+    const d=document.getElementById("display");
+    d.value=Number(d.value)/100;
+}
+
+function toHex(){
+    calculate();
+    const d = document.getElementById("display");
+    d.value =
+        parseInt(d.value,10)
+        .toString(16)
+        .toUpperCase();
+}
+
+function toBin(){
+    calculate();
+ const d=document.getElementById("display");
+ d.value=parseInt(d.value,10).toString(2);
+}
+
+function toOct(){
+    calculate();
+ const d=document.getElementById("display");
+ d.value=parseInt(d.value,10).toString(8);
+}
+
+</script>
+
+</body>
+</html>
